@@ -17,7 +17,7 @@ docker tag jetbrains/teamcity-minimal-agent teamcity-minimal-agent
 If you want to start with your own base agent image, see our [instructions](https://github.com/JetBrains/teamcity-docker-minimal-agent) on how to build it.
 If you change the operation system, update the following line in the in Dockerfile appropriately:  
 ```
-apt-get install -y docker-engine=1.10.3-0~wily 
+apt-get install -y docker-engine=1.13.0-0~ubuntu-xenial
 ```
 
 3) Run the `docker build` command:
