@@ -9,12 +9,13 @@ RUN apt-get update && \
     apt-get install -y software-properties-common && add-apt-repository ppa:openjdk-r/ppa && apt-get update && \
     apt-get install -y git mercurial openjdk-8-jdk apt-transport-https ca-certificates && \
     \
-    apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D && \
-    echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" > /etc/apt/sources.list.d/docker.list && \
+    apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 9DC858229FC7DD38854AE2D88D81803C0EBFCD88 && \
+    echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable" > /etc/apt/sources.list.d/docker.list && \
     \
-    apt-cache policy docker-engine && \
+    apt-cache policy docker-ce && \
     apt-get update && \
-    apt-get install -y docker-engine=1.13.0-0~ubuntu-xenial && \
+    apt-get install -y docker-ce=17.06.0~ce-0~ubuntu && \
+    systemctl disable docker && \
     \
     apt-get clean all && \
     \
