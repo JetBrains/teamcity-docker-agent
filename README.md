@@ -1,6 +1,6 @@
 ## TeamCity Agent Image Dockerfile
 
-This project contains the Dockerfile and all necessary scripts to build the Docker image and run a TeamCity Build Agent inside the container.
+This project contains the Dockerfiles and all necessary scripts to build the Linux and Windows Docker images and run a TeamCity Build Agent inside the container.
 
 You can pull the ready-to-use image from the Docker Hub repository
                                      
@@ -25,4 +25,4 @@ apt-get install -y docker-engine=1.13.0-0~ubuntu-xenial
 docker build -t teamcity-agent
 ```
 
-See our [detailed instructions] (https://hub.docker.com/r/jetbrains/teamcity-agent/) on how to use the image in the Docker Hub repository .
+See our [detailed instructions](https://hub.docker.com/r/jetbrains/teamcity-agent/) on how to use the image in the Docker Hub repository.
