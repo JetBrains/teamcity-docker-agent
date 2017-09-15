@@ -12,6 +12,11 @@ RUN Invoke-WebRequest https://bitbucket.org/tortoisehg/files/downloads/mercurial
     Start-Process msiexec -Wait -ArgumentList /q, /i, hg.msi ; \
     Remove-Item -Force hg.msi
 
+# Install Open JDK
+RUN Invoke-WebRequest https://github.com/ojdkbuild/ojdkbuild/releases/download/1.8.0.131-1/java-1.8.0-openjdk-1.8.0.131-1.b11.ojdkbuild.windows.x86_64.zip -OutFile openjdk.zip; \
+    Expand-Archive openjdk.zip -DestinationPath $Env:ProgramFiles\Java\OpenJDK; \
+    Remove-Item -Force openjdk.zip
+
 # Install .NET Core SDK
 RUN Invoke-WebRequest https://download.microsoft.com/download/1/B/4/1B4DE605-8378-47A5-B01B-2C79D6C55519/dotnet-sdk-2.0.0-win-x64.zip -OutFile dotnet.zip; \
     Expand-Archive dotnet.zip -DestinationPath $Env:ProgramFiles\dotnet; \
@@ -21,6 +26,7 @@ FROM teamcity-minimal-agent:latest-windowsservercore
 
 ENV GIT_HOME="C:\Program Files\Git" \
     HG_HOME="C:\Program Files\Mercurial" \
+    JAVA_HOME="C:\Program Files\Java\OpenJDK" \
     DOTNET_HOME="C:\Program Files\dotnet" \
     NUGET_XMLDOC_MODE=skip \
     DOTNET_CLI_TELEMETRY_OPTOUT=true \
@@ -28,6 +34,7 @@ ENV GIT_HOME="C:\Program Files\Git" \
 
 COPY --from=tools $GIT_HOME $GIT_HOME
 COPY --from=tools $HG_HOME $HG_HOME
+COPY --from=tools $JAVA_HOME $JAVA_HOME
 COPY --from=tools $DOTNET_HOME $DOTNET_HOME
 
 RUN setx /M PATH "%PATH%;%GIT_HOME%\cmd;%HG_HOME%;%DOTNET_HOME%"
