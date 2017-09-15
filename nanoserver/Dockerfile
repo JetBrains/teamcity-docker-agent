@@ -4,6 +4,7 @@ FROM teamcity-minimal-agent:latest-nanoserver
 
 ENV GIT_HOME="C:\Program Files\Git" \
     HG_HOME="C:\Program Files\Mercurial" \
+    JAVA_HOME="C:\Program Files\Java\OpenJDK" \
     DOTNET_HOME="C:\Program Files\dotnet" \
     NUGET_XMLDOC_MODE=skip \
     DOTNET_CLI_TELEMETRY_OPTOUT=true \
@@ -11,6 +12,7 @@ ENV GIT_HOME="C:\Program Files\Git" \
 
 COPY --from=tools $GIT_HOME $GIT_HOME
 COPY --from=tools $HG_HOME $HG_HOME
+COPY --from=tools $JAVA_HOME $JAVA_HOME
 COPY --from=tools $DOTNET_HOME $DOTNET_HOME
 
 RUN setx /M PATH "%PATH%;%GIT_HOME%\cmd;%HG_HOME%;%DOTNET_HOME%"
