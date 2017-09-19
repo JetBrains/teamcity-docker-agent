@@ -1,3 +1,5 @@
+[![official JetBrains project](http://jb.gg/badges/official-plastic.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+
 ## TeamCity Agent Image Dockerfile
 
 This project contains the Dockerfile and all necessary scripts to build the Docker image and run a TeamCity Build Agent inside the container.
