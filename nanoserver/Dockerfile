@@ -2,20 +2,16 @@ FROM teamcity-agent:latest-windowsservercore as tools
 
 FROM teamcity-minimal-agent:latest-nanoserver
 
-ENV GIT_HOME="C:\Program Files\Git" \
-    HG_HOME="C:\Program Files\Mercurial" \
-    JAVA_HOME="C:\Program Files\Java\OpenJDK" \
-    DOTNET_HOME="C:\Program Files\dotnet" \
-    NUGET_XMLDOC_MODE=skip \
+ENV NUGET_XMLDOC_MODE=skip \
     DOTNET_CLI_TELEMETRY_OPTOUT=true \
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true
 
-COPY --from=tools $GIT_HOME $GIT_HOME
-COPY --from=tools $HG_HOME $HG_HOME
-COPY --from=tools $JAVA_HOME $JAVA_HOME
-COPY --from=tools $DOTNET_HOME $DOTNET_HOME
+COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
+COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
+COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
+COPY --from=tools ["C:/Program Files/dotnet", "C:/Program Files/dotnet"]
 
-RUN setx /M PATH "%PATH%;%GIT_HOME%\cmd;%HG_HOME%;%DOTNET_HOME%"
+RUN setx /M PATH "%PATH%;C:\Program Files\Git\cmd;C:\Program Files\Mercurial;C:\Program Files\dotnet"
 
 # Trigger the population of the local package cache
 RUN powershell -Command \

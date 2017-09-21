@@ -13,8 +13,9 @@ RUN Invoke-WebRequest https://bitbucket.org/tortoisehg/files/downloads/mercurial
     Remove-Item -Force hg.msi
 
 # Install Open JDK
-RUN Invoke-WebRequest https://github.com/ojdkbuild/ojdkbuild/releases/download/1.8.0.131-1/java-1.8.0-openjdk-1.8.0.131-1.b11.ojdkbuild.windows.x86_64.zip -OutFile openjdk.zip; \
-    Expand-Archive openjdk.zip -DestinationPath $Env:ProgramFiles\Java\OpenJDK; \
+RUN Invoke-WebRequest http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-win_x64.zip -OutFile openjdk.zip; \
+    Expand-Archive openjdk.zip -DestinationPath $Env:ProgramFiles\Java; \
+    Get-ChildItem -Path $Env:ProgramFiles\Java -Filter "zulu*" | ForEach-Object {$_ | Rename-Item -NewName "OpenJDK" }; \
     Remove-Item -Force openjdk.zip
 
 # Install .NET Core SDK
@@ -24,20 +25,16 @@ RUN Invoke-WebRequest https://download.microsoft.com/download/1/B/4/1B4DE605-837
 
 FROM teamcity-minimal-agent:latest-windowsservercore
 
-ENV GIT_HOME="C:\Program Files\Git" \
-    HG_HOME="C:\Program Files\Mercurial" \
-    JAVA_HOME="C:\Program Files\Java\OpenJDK" \
-    DOTNET_HOME="C:\Program Files\dotnet" \
-    NUGET_XMLDOC_MODE=skip \
+ENV NUGET_XMLDOC_MODE=skip \
     DOTNET_CLI_TELEMETRY_OPTOUT=true \
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true
 
-COPY --from=tools $GIT_HOME $GIT_HOME
-COPY --from=tools $HG_HOME $HG_HOME
-COPY --from=tools $JAVA_HOME $JAVA_HOME
-COPY --from=tools $DOTNET_HOME $DOTNET_HOME
+COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
+COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
+COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
+COPY --from=tools ["C:/Program Files/dotnet", "C:/Program Files/dotnet"]
 
-RUN setx /M PATH "%PATH%;%GIT_HOME%\cmd;%HG_HOME%;%DOTNET_HOME%"
+RUN setx /M PATH "%PATH%;C:\Program Files\Git\cmd;C:\Program Files\Mercurial;C:\Program Files\dotnet"
 
 # Trigger the population of the local package cache
 RUN powershell -Command \
