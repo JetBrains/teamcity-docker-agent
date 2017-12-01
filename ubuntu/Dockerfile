@@ -3,7 +3,8 @@ FROM teamcity-minimal-agent:latest
 MAINTAINER Kateryna Shlyakhovetska <shkate@jetbrains.com>
 
 LABEL dockerImage.teamcity.version="latest" \
-      dockerImage.teamcity.buildNumber="latest"
+      dockerImage.teamcity.buildNumber="latest" \
+      dockerImage.teamcity.agent=
 
 RUN apt-get update && \
     apt-get install -y software-properties-common && add-apt-repository ppa:openjdk-r/ppa && apt-get update && \
