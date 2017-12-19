@@ -13,9 +13,10 @@ RUN Invoke-WebRequest https://bitbucket.org/tortoisehg/files/downloads/mercurial
     Remove-Item -Force hg.msi
 
 # Install Open JDK
-RUN Invoke-WebRequest http://cdn.azul.com/zulu/bin/zulu8.21.0.1-jdk8.0.131-win_x64.zip -OutFile openjdk.zip; \
+RUN Invoke-WebRequest https://github.com/ojdkbuild/ojdkbuild/releases/download/1.8.0.151-1/java-1.8.0-openjdk-1.8.0.151-1.b12.ojdkbuild.windows.x86_64.zip -OutFile openjdk.zip; \
     Expand-Archive openjdk.zip -DestinationPath $Env:ProgramFiles\Java; \
-    Get-ChildItem -Path $Env:ProgramFiles\Java -Filter "zulu*" | ForEach-Object {$_ | Rename-Item -NewName "OpenJDK" }; \
+    Get-ChildItem -Path $Env:ProgramFiles\Java -Filter "java-*-openjdk*" | ForEach-Object {$_ | Rename-Item -NewName "OpenJDK" }; \
+	Remove-Item -Force $Env:ProgramFiles\Java\OpenJDK\src.zip; \
     Remove-Item -Force openjdk.zip
 
 # Install .NET Core SDK
