@@ -17,6 +17,12 @@ RUN apt-get update && \
     apt-get install -y docker-ce=17.06.0~ce-0~ubuntu && \
     systemctl disable docker && \
     \
+    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg && \
+    mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg && \
+    echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-xenial-prod xenial main" > /etc/apt/sources.list.d/dotnetdev.list && \
+    apt-get update && \
+    apt-get install -y dotnet-sdk-2.0.2 && \
+    \
     apt-get clean all && \
     \
     usermod -aG docker buildagent
