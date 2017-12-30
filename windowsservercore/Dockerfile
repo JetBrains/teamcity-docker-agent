@@ -20,7 +20,7 @@ RUN Invoke-WebRequest https://github.com/ojdkbuild/ojdkbuild/releases/download/1
     Remove-Item -Force openjdk.zip
 
 # Install .NET Core SDK
-RUN Invoke-WebRequest https://download.microsoft.com/download/1/B/4/1B4DE605-8378-47A5-B01B-2C79D6C55519/dotnet-sdk-2.0.0-win-x64.zip -OutFile dotnet.zip; \
+RUN Invoke-WebRequest https://dotnetcli.blob.core.windows.net/dotnet/Sdk/2.1.3/dotnet-sdk-2.1.3-win-x64.zip -OutFile dotnet.zip; \
     Expand-Archive dotnet.zip -DestinationPath $Env:ProgramFiles\dotnet; \
     Remove-Item -Force dotnet.zip
 
