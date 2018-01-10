@@ -35,13 +35,10 @@ COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=tools ["C:/Program Files/dotnet", "C:/Program Files/dotnet"]
 
-RUN setx /M PATH "%PATH%;C:\Program Files\Git\cmd;C:\Program Files\Mercurial;C:\Program Files\dotnet"
+RUN setx /M PATH ('{0};C:\Program Files\Git\cmd;C:\Program Files\Mercurial;C:\Program Files\dotnet' -f $env:PATH)
 
 # Trigger the population of the local package cache
-RUN powershell -Command \
-    $ErrorActionPreference = 'Stop'; \
-    $ProgressPreference = 'SilentlyContinue'; \
-    New-Item -Type Directory warmup; \
+RUN New-Item -Type Directory warmup; \
     cd warmup; \
     dotnet new; \
     cd ..; \
