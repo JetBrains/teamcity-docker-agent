@@ -1,4 +1,4 @@
-FROM microsoft/windowsservercore AS tools
+FROM microsoft/windowsservercore:1709 AS tools
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -24,7 +24,7 @@ RUN Invoke-WebRequest https://dotnetcli.blob.core.windows.net/dotnet/Sdk/2.1.4/d
     Expand-Archive dotnet.zip -DestinationPath $Env:ProgramFiles\dotnet; \
     Remove-Item -Force dotnet.zip
 
-FROM teamcity-minimal-agent:latest-windowsservercore
+FROM teamcity-minimal-agent:latest-windowsservercore-1709
 
 ENV NUGET_XMLDOC_MODE=skip \
     DOTNET_CLI_TELEMETRY_OPTOUT=true \
