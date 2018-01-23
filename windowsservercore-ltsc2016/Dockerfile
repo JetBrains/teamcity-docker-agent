@@ -19,11 +19,6 @@ RUN Invoke-WebRequest https://github.com/ojdkbuild/ojdkbuild/releases/download/1
 	Remove-Item -Force $Env:ProgramFiles\Java\OpenJDK\src.zip; \
     Remove-Item -Force openjdk.zip
 
-# Install .NET Core SDK
-RUN Invoke-WebRequest https://dotnetcli.blob.core.windows.net/dotnet/Sdk/2.1.4/dotnet-sdk-2.1.4-win-x64.zip -OutFile dotnet.zip; \
-    Expand-Archive dotnet.zip -DestinationPath $Env:ProgramFiles\dotnet; \
-    Remove-Item -Force dotnet.zip
-
 FROM microsoft/dotnet-framework-build:4.7.1-windowsservercore-ltsc2016
 
 ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
@@ -41,15 +36,7 @@ COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
 COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
 COPY --from=tools ["C:/Program Files/Java/Oracle", "C:/Program Files/Java/Oracle"]
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
-COPY --from=tools ["C:/Program Files/dotnet", "C:/Program Files/dotnet"]
 
-# Trigger the population of the local package cache
-RUN New-Item -Type Directory warmup; \
-    cd warmup; \
-    dotnet new; \
-    cd ..; \
-    Remove-Item -Force -Recurse warmup
-
-RUN setx /M PATH ('{0};{1}\bin;C:\Program Files\Git\cmd;C:\Program Files\Mercurial;C:\Program Files\dotnet' -f $env:PATH, $env:JRE_HOME)
+RUN setx /M PATH ('{0};{1}\bin;C:\Program Files\Git\cmd;C:\Program Files\Mercurial' -f $env:PATH, $env:JRE_HOME)
 
 CMD ./BuildAgent/run-agent.ps1
