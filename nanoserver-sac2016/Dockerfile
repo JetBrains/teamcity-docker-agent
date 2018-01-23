@@ -1,6 +1,6 @@
-FROM teamcity-agent:latest-windowsservercore as tools
+FROM teamcity-agent:latest-windowsservercore-ltsc2016 as tools
 
-FROM teamcity-minimal-agent:latest-nanoserver
+FROM teamcity-minimal-agent:latest-nanoserver-sac2016
 
 ENV NUGET_XMLDOC_MODE=skip \
     DOTNET_CLI_TELEMETRY_OPTOUT=true \
