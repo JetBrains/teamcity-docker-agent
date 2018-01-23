@@ -1,4 +1,4 @@
-FROM microsoft/windowsservercore:1709 AS tools
+FROM teamcity-minimal-agent:latest-windowsservercore-1709 AS tools
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -24,18 +24,24 @@ RUN Invoke-WebRequest https://dotnetcli.blob.core.windows.net/dotnet/Sdk/2.1.4/d
     Expand-Archive dotnet.zip -DestinationPath $Env:ProgramFiles\dotnet; \
     Remove-Item -Force dotnet.zip
 
-FROM teamcity-minimal-agent:latest-windowsservercore-1709
+FROM microsoft/dotnet-framework-build:4.7.1-windowsservercore-1709
 
-ENV NUGET_XMLDOC_MODE=skip \
+ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
+    JRE_HOME="C:\Program Files\Java\Oracle\jre" \
+    NUGET_XMLDOC_MODE=skip \
     DOTNET_CLI_TELEMETRY_OPTOUT=true \
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true
 
+EXPOSE 9090
+
+VOLUME C:/BuildAgent/conf
+
+COPY --from=tools /BuildAgent /BuildAgent
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
 COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
+COPY --from=tools ["C:/Program Files/Java/Oracle", "C:/Program Files/Java/Oracle"]
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=tools ["C:/Program Files/dotnet", "C:/Program Files/dotnet"]
-
-RUN setx /M PATH ('{0};C:\Program Files\Git\cmd;C:\Program Files\Mercurial;C:\Program Files\dotnet' -f $env:PATH)
 
 # Trigger the population of the local package cache
 RUN New-Item -Type Directory warmup; \
@@ -43,3 +49,7 @@ RUN New-Item -Type Directory warmup; \
     dotnet new; \
     cd ..; \
     Remove-Item -Force -Recurse warmup
+
+RUN setx /M PATH ('{0};{1}\bin;C:\Program Files\Git\cmd;C:\Program Files\Mercurial;C:\Program Files\dotnet' -f $env:PATH, $env:JRE_HOME)
+
+CMD ./BuildAgent/run-agent.ps1
