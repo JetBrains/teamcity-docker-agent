@@ -10,14 +10,15 @@ ENV NUGET_XMLDOC_MODE=skip \
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true
 
 RUN apt-get update && \
-    apt-get install -y software-properties-common && add-apt-repository ppa:openjdk-r/ppa && apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository ppa:openjdk-r/ppa && add-apt-repository -y ppa:git-core/ppa && apt-get update && \
     apt-get install -y git mercurial openjdk-8-jdk apt-transport-https ca-certificates && \
     \
     apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 9DC858229FC7DD38854AE2D88D81803C0EBFCD88 && \
     echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable" > /etc/apt/sources.list.d/docker.list && \
     \
     apt-cache policy docker-ce && \
-    apt-get update && \
+    apt-get update && \ 
     apt-get install -y docker-ce=17.12.0~ce-0~ubuntu && \
     systemctl disable docker && \
     \
