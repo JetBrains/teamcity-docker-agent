@@ -19,7 +19,7 @@ RUN apt-get update && \
     \
     apt-cache policy docker-ce && \
     apt-get update && \
-    apt-get install -y docker-ce=17.12.0~ce-0~ubuntu && \
+    apt-get install -y docker-ce=18.03.0~ce-0~ubuntu && \
     systemctl disable docker && \
     \
     apt-get install -y --no-install-recommends \
