@@ -21,6 +21,7 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y docker-ce=18.03.0~ce-0~ubuntu && \
     systemctl disable docker && \
+    curl -SL https://github.com/docker/compose/releases/download/1.20.1/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose && \
     \
     apt-get install -y --no-install-recommends \
             libc6 \
