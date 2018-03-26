@@ -7,7 +7,8 @@ LABEL dockerImage.teamcity.version="latest" \
 
 ENV NUGET_XMLDOC_MODE=skip \
     DOTNET_CLI_TELEMETRY_OPTOUT=true \
-    DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true \
+    GIT_SSH_VARIANT=ssh
 
 RUN apt-get update && \
     apt-get install -y software-properties-common && \
