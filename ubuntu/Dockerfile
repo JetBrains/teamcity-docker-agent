@@ -1,4 +1,4 @@
-FROM teamcity-minimal-agent:latest
+FROM jetbrains/teamcity-minimal-agent:latest
 
 MAINTAINER Vladislav Rassokhin <vladislav.rassokhin@jetbrains.com>
 
