@@ -19,7 +19,7 @@ RUN Invoke-WebRequest https://github.com/ojdkbuild/ojdkbuild/releases/download/1
 	Remove-Item -Force $Env:ProgramFiles\Java\OpenJDK\src.zip; \
     Remove-Item -Force openjdk.zip
 
-FROM microsoft/dotnet-framework-build:4.7.1-windowsservercore-ltsc2016
+FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-ltsc2016
 
 ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
     JRE_HOME="C:\Program Files\Java\Oracle\jre" \
