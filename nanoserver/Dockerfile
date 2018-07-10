@@ -1,13 +1,17 @@
-FROM teamcity-agent:latest-windowsservercore-ltsc2016 as tools
+ARG TAG=1803
+FROM teamcity-agent:latest-windowsservercore-$TAG as tools
 
-FROM teamcity-minimal-agent:latest-nanoserver-sac2016
+FROM teamcity-minimal-agent:latest-nanoserver-$TAG
 
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
 COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=tools ["C:/Program Files/dotnet", "C:/Program Files/dotnet"]
 
+# In order to set system PATH, ContainerAdministrator must be used
+USER ContainerAdministrator
 RUN setx /M PATH "%PATH%;C:\Program Files\Git\cmd;C:\Program Files\Mercurial;C:\Program Files\dotnet"
+USER ContainerUser
 
     # Opt out of the telemetry feature
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=true \
@@ -21,6 +25,3 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=true \
     DOTNET_USE_POLLING_FILE_WATCHER=true \
     # Skip extraction of XML docs - generally not useful within an image/container - helps perfomance
     NUGET_XMLDOC_MODE=skip
-
-# Trigger first run experience by running arbitrary cmd to populate local package cache
-RUN dotnet help

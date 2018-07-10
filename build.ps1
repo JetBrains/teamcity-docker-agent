@@ -1,13 +1,18 @@
-# 1709 images
-docker build `
- -t teamcity-agent:latest-windowsservercore-1709 `
- -f windowsservercore-1709/Dockerfile .
+# Build semi annual images
+$tags = @("1803")
+foreach ($tag in $tags) {
+ docker build `
+  --build-arg TAG=$tag `
+  -t "teamcity-agent:latest-windowsservercore-$tag" `
+  -f windowsservercore/Dockerfile .
 
-docker build `
- -t teamcity-agent:latest-nanoserver-1709 `
- -f nanoserver-1709/Dockerfile .
+ docker build `
+  --build-arg TAG=$tag `
+  -t "teamcity-agent:latest-nanoserver-$tag" `
+  -f nanoserver/Dockerfile .
+}
 
-# old images
+# Build images with long term support
 docker build --isolation=hyperv `
  -t teamcity-agent:latest-windowsservercore `
  -t teamcity-agent:latest-windowsservercore-ltsc2016 `
