@@ -26,19 +26,21 @@ FROM teamcity-minimal-agent:latest-nanoserver-$TAG AS buildagent
 
 FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$TAG
 
-EXPOSE 9090
-
-VOLUME C:/BuildAgent/conf
-
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
 COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=buildagent ["C:/Program Files/Java/Oracle", "C:/Program Files/Java/Oracle"]
 COPY --from=buildagent /BuildAgent /BuildAgent
 
-RUN setx /M PATH ('{0};{1}\bin;C:\Program Files\Git\cmd;C:\Program Files\Mercurial' -f $env:PATH, $env:JRE_HOME)
+EXPOSE 9090
 
+VOLUME C:/BuildAgent/conf
+
+CMD ./BuildAgent/run-agent.ps1
+
+    # Configuration file for TeamCity agent
 ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
+    # Java home directory
     JRE_HOME="C:\Program Files\Java\Oracle\jre" \
     # Opt out of the telemetry feature
     DOTNET_CLI_TELEMETRY_OPTOUT=true \
@@ -53,4 +55,4 @@ ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
     # Skip extraction of XML docs - generally not useful within an image/container - helps perfomance
     NUGET_XMLDOC_MODE=skip
 
-CMD ./BuildAgent/run-agent.ps1
+RUN setx /M PATH ('{0};{1}\bin;C:\Program Files\Git\cmd;C:\Program Files\Mercurial' -f $env:PATH, $env:JRE_HOME)
