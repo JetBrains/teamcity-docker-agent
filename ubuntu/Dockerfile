@@ -52,4 +52,7 @@ RUN apt-get update && \
     \
     usermod -aG docker buildagent
 
+# A better fix for TW-52939 Dockerfile build fails because of aufs
+VOLUME /var/lib/docker
+
 COPY run-docker.sh /services/run-docker.sh
