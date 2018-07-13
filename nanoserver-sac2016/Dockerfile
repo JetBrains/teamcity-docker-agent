@@ -1,7 +1,6 @@
-ARG TAG=1803
-FROM teamcity-agent:latest-windowsservercore-$TAG AS tools
+FROM teamcity-agent:latest-windowsservercore-ltsc2016 AS tools
 
-FROM teamcity-base:latest-nanoserver-$TAG
+FROM teamcity-base:latest-nanoserver-sac2016
 
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
 COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
@@ -13,7 +12,7 @@ EXPOSE 9090
 
 VOLUME C:/BuildAgent/conf
 
-CMD pwsh ./BuildAgent/run-agent.ps1
+CMD powershell ./BuildAgent/run-agent.ps1
 
     # Configuration file for TeamCity agent
 ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
@@ -30,10 +29,7 @@ ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
     # Skip extraction of XML docs - generally not useful within an image/container - helps perfomance
     NUGET_XMLDOC_MODE=skip
 
-# In order to set system PATH, ContainerAdministrator must be used
-USER ContainerAdministrator
 RUN setx /M PATH "%PATH%;C:\Program Files\Git\cmd;C:\Program Files\Mercurial;C:\Program Files\dotnet"
-USER ContainerUser
 
 # Trigger first run experience by running arbitrary cmd to populate local package cache
 RUN dotnet help

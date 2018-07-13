@@ -1,5 +1,4 @@
-ARG TAG=1803
-FROM microsoft/windowsservercore:$TAG AS tools
+FROM microsoft/windowsservercore:ltsc2016 AS tools
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -22,9 +21,9 @@ RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
 	Remove-Item -Force $Env:ProgramFiles\Java\OpenJDK\src.zip; \
     Remove-Item -Force openjdk.zip
 
-FROM teamcity-minimal-agent:latest-nanoserver-$TAG AS buildagent
+FROM teamcity-minimal-agent:latest-nanoserver-sac2016 AS buildagent
 
-FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$TAG
+FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-ltsc2016
 
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
 COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
