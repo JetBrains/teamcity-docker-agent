@@ -1,12 +1,23 @@
 ARG TAG=1803
-FROM teamcity-agent:latest-windowsservercore-$TAG AS tools
 
+FROM teamcity-base:latest-nanoserver-$TAG AS dotnet
+SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+# Retrieve .NET Core SDK
+ENV DOTNET_SDK_VERSION 2.1.401
+
+RUN Invoke-WebRequest -OutFile dotnet.zip https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$Env:DOTNET_SDK_VERSION/dotnet-sdk-$Env:DOTNET_SDK_VERSION-win-x64.zip; \
+    Expand-Archive dotnet.zip -DestinationPath $Env:ProgramFiles\dotnet; \
+    Remove-Item -Force dotnet.zip; \
+    Get-ChildItem -Path $Env:ProgramFiles\dotnet -Include *.lzma -File -Recurse | foreach { $_.Delete()}
+
+FROM teamcity-agent:latest-windowsservercore-$TAG AS tools
 FROM teamcity-base:latest-nanoserver-$TAG
 
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
 COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
-COPY --from=tools ["C:/Program Files/dotnet", "C:/Program Files/dotnet"]
+COPY --from=dotnet ["C:/Program Files/dotnet", "C:/Program Files/dotnet"]
 COPY --from=tools /BuildAgent /BuildAgent
 
 EXPOSE 9090
