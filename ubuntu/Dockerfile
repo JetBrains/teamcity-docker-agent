@@ -54,7 +54,7 @@ RUN apt-get update && \
         && find /usr/share/dotnet -name "*.lzma" -type f -delete \
         && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
     \
-    /usr/bin/dotnet help \
+    /usr/bin/dotnet help && \
     \
     apt-get clean all && \
     \
