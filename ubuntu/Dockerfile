@@ -5,9 +5,18 @@ MAINTAINER Vladislav Rassokhin <vladislav.rassokhin@jetbrains.com>
 LABEL dockerImage.teamcity.version="latest" \
       dockerImage.teamcity.buildNumber="latest"
 
-ENV NUGET_XMLDOC_MODE=skip \
-    DOTNET_CLI_TELEMETRY_OPTOUT=true \
+    # Opt out of the telemetry feature
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=true \
+    # Disable first time experience
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true \
+    # Configure Kestrel web server to bind to port 80 when present
+    ASPNETCORE_URLS=http://+:80 \
+    # Enable detection of running in a container
+    DOTNET_RUNNING_IN_CONTAINER=true \
+    # Enable correct mode for dotnet watch (only mode supported in a container)
+    DOTNET_USE_POLLING_FILE_WATCHER=true \
+    # Skip extraction of XML docs - generally not useful within an image/container - helps perfomance
+    NUGET_XMLDOC_MODE=skip \
     GIT_SSH_VARIANT=ssh
 
 RUN apt-get update && \
@@ -38,18 +47,14 @@ RUN apt-get update && \
             zlib1g \
         && rm -rf /var/lib/apt/lists/* && \
     \
-    curl -SL https://dotnetcli.blob.core.windows.net/dotnet/Sdk/2.1.300/dotnet-sdk-2.1.300-linux-x64.tar.gz --output dotnet.tar.gz \
+    curl -SL https://dotnetcli.blob.core.windows.net/dotnet/Sdk/2.1.401/dotnet-sdk-2.1.401-linux-x64.tar.gz --output dotnet.tar.gz \
         && mkdir -p /usr/share/dotnet \
         && tar -zxf dotnet.tar.gz -C /usr/share/dotnet \
         && rm dotnet.tar.gz \
+        && find /usr/share/dotnet -name "*.lzma" -type f -delete \
         && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
     \
-    mkdir warmup \
-        && cd warmup \
-        && dotnet new \
-        && cd .. \
-        && rm -rf warmup \
-        && rm -rf /tmp/NuGetScratch && \
+    /usr/bin/dotnet help \
     \
     apt-get clean all && \
     \
