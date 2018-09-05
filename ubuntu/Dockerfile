@@ -22,7 +22,7 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=true \
 RUN apt-get update && \
     apt-get install -y software-properties-common && \
     add-apt-repository -y ppa:openjdk-r/ppa && add-apt-repository -y ppa:git-core/ppa && apt-get update && \
-    apt-get install -y git mercurial openjdk-8-jdk apt-transport-https ca-certificates && \
+    apt-get install -y git mercurial openjdk-8-jdk rsync apt-transport-https ca-certificates && \
     \
     apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 9DC858229FC7DD38854AE2D88D81803C0EBFCD88 && \
     echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable" > /etc/apt/sources.list.d/docker.list && \
