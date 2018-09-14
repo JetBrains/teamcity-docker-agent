@@ -29,3 +29,17 @@ docker build -t teamcity-agent
 ```
 
 See our [detailed instructions](https://hub.docker.com/r/jetbrains/teamcity-agent/) on how to use the image in the Docker Hub repository.
+
+## Expose docker engine to container
+
+#### Common way:
+* `docker run ... -e DOCKER_HOST=tcp://%docker-host%:%port%`
+
+#### Linux hosts:
+* `docker run ... -v /var/run/docker.sock:/var/run/docker.sock`
+* `docker run ... --privileged -e DOCKER_IN_DOCKER=start`
+
+#### Windows hosts:
+* `docker run ... -v //var/run/docker.sock:/var/run/docker.sock` (In Linux containers mode)
+* `docker run ... -v \\.\pipe\docker_engine:\\.\pipe\docker_engine` (For Windows Containers 1709+)
+* `docker run ... -v /var/run/docker.sock:/var/run/docker.sock` ([via WSL & npiperelay](https://blogs.technet.microsoft.com/virtualization/2017/12/08/wsl-interoperability-with-docker/) in LCOW mode on Windows 1803+)
