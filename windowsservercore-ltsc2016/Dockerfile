@@ -9,7 +9,7 @@ RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
     Remove-Item -Force git.zip
 
 # Install Mercurial
-RUN Invoke-WebRequest https://bitbucket.org/tortoisehg/files/downloads/mercurial-4.6.1-x64.msi -OutFile hg.msi; \
+RUN Invoke-WebRequest https://bitbucket.org/tortoisehg/files/downloads/mercurial-4.7.2-x64.msi -OutFile hg.msi; \
     Start-Process msiexec -Wait -ArgumentList /q, /i, hg.msi ; \
     Remove-Item -Force hg.msi
 
