@@ -15,7 +15,6 @@ FROM teamcity-agent:latest-windowsservercore-$TAG AS tools
 FROM teamcity-base:latest-nanoserver-$TAG
 
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
-COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=dotnet ["C:/Program Files/dotnet", "C:/Program Files/dotnet"]
 COPY --from=tools /BuildAgent /BuildAgent
@@ -43,7 +42,7 @@ ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
 
 # In order to set system PATH, ContainerAdministrator must be used
 USER ContainerAdministrator
-RUN setx /M PATH "%PATH%;C:\Program Files\Git\cmd;C:\Program Files\Mercurial;C:\Program Files\dotnet"
+RUN setx /M PATH "%PATH%;C:\Program Files\Git\cmd;C:\Program Files\dotnet"
 USER ContainerUser
 
 # Trigger first run experience by running arbitrary cmd to populate local package cache

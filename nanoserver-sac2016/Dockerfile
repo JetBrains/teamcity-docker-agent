@@ -13,7 +13,6 @@ FROM teamcity-agent:latest-windowsservercore-ltsc2016 AS tools
 FROM teamcity-base:latest-nanoserver-sac2016
 
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
-COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=dotnet ["C:/Program Files/dotnet", "C:/Program Files/dotnet"]
 COPY --from=tools /BuildAgent /BuildAgent
@@ -39,7 +38,7 @@ ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
     # Skip extraction of XML docs - generally not useful within an image/container - helps perfomance
     NUGET_XMLDOC_MODE=skip
 
-RUN setx /M PATH "%PATH%;C:\Program Files\Git\cmd;C:\Program Files\Mercurial;C:\Program Files\dotnet"
+RUN setx /M PATH "%PATH%;C:\Program Files\Git\cmd;C:\Program Files\dotnet"
 
 # Trigger first run experience by running arbitrary cmd to populate local package cache
 RUN dotnet help
