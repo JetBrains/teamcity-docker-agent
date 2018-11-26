@@ -2,7 +2,7 @@ FROM teamcity-base:latest-nanoserver-sac2016 AS dotnet
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 # Retrieve .NET Core SDK
-ENV DOTNET_SDK_VERSION 2.1.403
+ENV DOTNET_SDK_VERSION 2.1.500
 
 RUN Invoke-WebRequest -OutFile dotnet.zip https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$Env:DOTNET_SDK_VERSION/dotnet-sdk-$Env:DOTNET_SDK_VERSION-win-x64.zip; \
     Expand-Archive dotnet.zip -DestinationPath $Env:ProgramFiles\dotnet; \

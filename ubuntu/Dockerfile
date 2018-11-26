@@ -17,7 +17,9 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=true \
     DOTNET_USE_POLLING_FILE_WATCHER=true \
     # Skip extraction of XML docs - generally not useful within an image/container - helps perfomance
     NUGET_XMLDOC_MODE=skip \
-    GIT_SSH_VARIANT=ssh
+    GIT_SSH_VARIANT=ssh \
+    # Install .NET Core SDK
+    DOTNET_SDK_VERSION=2.1.500
 
 RUN apt-get update && \
     apt-get install -y software-properties-common && \
@@ -47,14 +49,12 @@ RUN apt-get update && \
             zlib1g \
         && rm -rf /var/lib/apt/lists/* && \
     \
-    curl -SL https://dotnetcli.blob.core.windows.net/dotnet/Sdk/2.1.403/dotnet-sdk-2.1.403-linux-x64.tar.gz --output dotnet.tar.gz \
+    curl -SL https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-x64.tar.gz --output dotnet.tar.gz \
         && mkdir -p /usr/share/dotnet \
         && tar -zxf dotnet.tar.gz -C /usr/share/dotnet \
         && rm dotnet.tar.gz \
         && find /usr/share/dotnet -name "*.lzma" -type f -delete \
         && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
-    \
-    /usr/bin/dotnet help && \
     \
     apt-get clean all && \
     \
@@ -64,3 +64,6 @@ RUN apt-get update && \
 VOLUME /var/lib/docker
 
 COPY run-docker.sh /services/run-docker.sh
+
+# Trigger .NET CLI first run experience by running arbitrary cmd to populate local package cache
+RUN dotnet help
