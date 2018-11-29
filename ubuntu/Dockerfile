@@ -29,9 +29,9 @@ RUN apt-get update && \
     \
     apt-cache policy docker-ce && \
     apt-get update && \
-    apt-get install -y docker-ce=18.03.0~ce-0~ubuntu && \
+    apt-get install -y docker-ce=18.06.1~ce~3-0~ubuntu systemd && \
     systemctl disable docker && \
-    curl -SL https://github.com/docker/compose/releases/download/1.20.1/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose && \
+    curl -SL https://github.com/docker/compose/releases/download/1.23.2/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose && \
     \
     apt-get install -y --no-install-recommends \
             libc6 \
