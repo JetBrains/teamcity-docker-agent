@@ -1,6 +1,13 @@
-FROM microsoft/windowsservercore:ltsc2016 AS tools
+FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-ltsc2016 AS tools
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+# Install JDK
+RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
+    Invoke-WebRequest https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u192-b12/OpenJDK8U-jdk_x64_windows_hotspot_8u192b12.zip -OutFile jdk.zip; \
+    Expand-Archive jdk.zip -DestinationPath $Env:ProgramFiles\Java ; \
+    Get-ChildItem $Env:ProgramFiles\Java | Rename-Item -NewName "OpenJDK" ; \
+    Remove-Item -Force jdk.zip
 
 # Install Git
 RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
@@ -13,22 +20,13 @@ RUN Invoke-WebRequest https://bitbucket.org/tortoisehg/files/downloads/mercurial
     Start-Process msiexec -Wait -ArgumentList /q, /i, hg.msi ; \
     Remove-Item -Force hg.msi
 
-# Install Open JDK
-RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
-    Invoke-WebRequest https://github.com/ojdkbuild/ojdkbuild/releases/download/1.8.0.161-1/java-1.8.0-openjdk-1.8.0.161-1.b14.ojdkbuild.windows.x86_64.zip -OutFile openjdk.zip; \
-    Expand-Archive openjdk.zip -DestinationPath $Env:ProgramFiles\Java; \
-    Get-ChildItem -Path $Env:ProgramFiles\Java -Filter "java-*-openjdk*" | ForEach-Object {$_ | Rename-Item -NewName "OpenJDK" }; \
-	Remove-Item -Force $Env:ProgramFiles\Java\OpenJDK\src.zip; \
-    Remove-Item -Force openjdk.zip
-
 FROM teamcity-minimal-agent:latest-nanoserver-sac2016 AS buildagent
 
 FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-ltsc2016
 
+COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
 COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
-COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
-COPY --from=buildagent ["C:/Program Files/Java/Oracle", "C:/Program Files/Java/Oracle"]
 COPY --from=buildagent /BuildAgent /BuildAgent
 
 EXPOSE 9090
@@ -40,7 +38,7 @@ CMD ./BuildAgent/run-agent.ps1
     # Configuration file for TeamCity agent
 ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
     # Java home directory
-    JRE_HOME="C:\Program Files\Java\Oracle\jre" \
+    JAVA_HOME="C:\Program Files\Java\OpenJDK\jre" \
     # Opt out of the telemetry feature
     DOTNET_CLI_TELEMETRY_OPTOUT=true \
     # Disable first time experience
@@ -54,4 +52,4 @@ ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
     # Skip extraction of XML docs - generally not useful within an image/container - helps perfomance
     NUGET_XMLDOC_MODE=skip
 
-RUN setx /M PATH ('{0};{1}\bin;C:\Program Files\Git\cmd;C:\Program Files\Mercurial' -f $env:PATH, $env:JRE_HOME)
+RUN setx /M PATH ('{0};{1}\bin;C:\Program Files\Git\cmd;C:\Program Files\Mercurial' -f $env:PATH, $env:JAVA_HOME)

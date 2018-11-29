@@ -1,6 +1,6 @@
 ARG TAG=1803
 
-FROM teamcity-base:latest-nanoserver-$TAG AS dotnet
+FROM microsoft/powershell:nanoserver-$TAG AS dotnet
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 # Retrieve .NET Core SDK
@@ -12,10 +12,10 @@ RUN Invoke-WebRequest -OutFile dotnet.zip https://dotnetcli.blob.core.windows.ne
     Get-ChildItem -Path $Env:ProgramFiles\dotnet -Include *.lzma -File -Recurse | foreach { $_.Delete()}
 
 FROM teamcity-agent:latest-windowsservercore-$TAG AS tools
-FROM teamcity-base:latest-nanoserver-$TAG
+FROM microsoft/powershell:nanoserver-$TAG
 
-COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
+COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
 COPY --from=dotnet ["C:/Program Files/dotnet", "C:/Program Files/dotnet"]
 COPY --from=tools /BuildAgent /BuildAgent
 
@@ -27,6 +27,8 @@ CMD pwsh ./BuildAgent/run-agent.ps1
 
     # Configuration file for TeamCity agent
 ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
+    # Java home directory
+    JAVA_HOME="C:\Program Files\Java\OpenJDK" \
     # Opt out of the telemetry feature
     DOTNET_CLI_TELEMETRY_OPTOUT=true \
     # Disable first time experience
@@ -42,7 +44,7 @@ ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
 
 # In order to set system PATH, ContainerAdministrator must be used
 USER ContainerAdministrator
-RUN setx /M PATH "%PATH%;C:\Program Files\Git\cmd;C:\Program Files\dotnet"
+RUN setx /M PATH "%PATH%;%JAVA_HOME%\bin;C:\Program Files\Git\cmd;C:\Program Files\dotnet"
 USER ContainerUser
 
 # Trigger first run experience by running arbitrary cmd to populate local package cache
