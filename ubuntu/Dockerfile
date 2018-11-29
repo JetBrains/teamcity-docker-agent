@@ -22,12 +22,10 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=true \
     DOTNET_SDK_VERSION=2.1.500
 
 RUN apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository -y ppa:git-core/ppa && apt-get update && \
-    apt-get install -y git mercurial apt-transport-https ca-certificates && \
+    apt-get install -y git mercurial apt-transport-https ca-certificates software-properties-common && \
     \
-    apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 9DC858229FC7DD38854AE2D88D81803C0EBFCD88 && \
-    echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable" > /etc/apt/sources.list.d/docker.list && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
     \
     apt-cache policy docker-ce && \
     apt-get update && \
@@ -37,15 +35,12 @@ RUN apt-get update && \
     \
     apt-get install -y --no-install-recommends \
             libc6 \
-            libcurl3 \
             libgcc1 \
             libgssapi-krb5-2 \
-            libicu55 \
+            libicu60 \
             liblttng-ust0 \
             libssl1.0.0 \
             libstdc++6 \
-            libunwind8 \
-            libuuid1 \
             zlib1g \
         && rm -rf /var/lib/apt/lists/* && \
     \
