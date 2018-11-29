@@ -7,6 +7,9 @@ RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
     Invoke-WebRequest https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u192-b12/OpenJDK8U-jdk_x64_windows_hotspot_8u192b12.zip -OutFile jdk.zip; \
     Expand-Archive jdk.zip -DestinationPath $Env:ProgramFiles\Java ; \
     Get-ChildItem $Env:ProgramFiles\Java | Rename-Item -NewName "OpenJDK" ; \
+    Remove-Item $Env:ProgramFiles\Java\OpenJDK\demo -Force -Recurse ; \
+    Remove-Item $Env:ProgramFiles\Java\OpenJDK\sample -Force -Recurse ; \
+    Remove-Item $Env:ProgramFiles\Java\OpenJDK\src.zip -Force ; \
     Remove-Item -Force jdk.zip
 
 # Install Git
