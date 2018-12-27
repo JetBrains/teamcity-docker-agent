@@ -19,7 +19,7 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=true \
     NUGET_XMLDOC_MODE=skip \
     GIT_SSH_VARIANT=ssh \
     # Install .NET Core SDK
-    DOTNET_SDK_VERSION=2.1.500
+    DOTNET_SDK_VERSION=2.2.100
 
 RUN apt-get update && \
     apt-get install -y git mercurial apt-transport-https ca-certificates software-properties-common wget && \
@@ -46,18 +46,11 @@ RUN apt-get update && \
             libstdc++6 \
             zlib1g \
         && rm -rf /var/lib/apt/lists/* && \
-    \
-    curl -SL https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$DOTNET_SDK_VERSION/dotnet-sdk-$DOTNET_SDK_VERSION-linux-x64.tar.gz --output dotnet.tar.gz \
-        && mkdir -p /usr/share/dotnet \
-        && tar -zxf dotnet.tar.gz -C /usr/share/dotnet \
-        && rm dotnet.tar.gz \
-        && find /usr/share/dotnet -name "*.lzma" -type f -delete \
-        && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
-    \
+     \
     add-apt-repository universe  && \
     apt-get install apt-transport-https  && \
     apt-get update  && \
-    sudo apt-get install dotnet-sdk-2.2  && \
+    apt-get install -y dotnet-sdk-2.2  && \
     \
     apt-get clean all && \
     \
