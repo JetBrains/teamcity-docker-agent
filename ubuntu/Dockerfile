@@ -26,6 +26,9 @@ RUN apt-get update && \
     \
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+    \     
+    wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb && \
+    dpkg -i packages-microsoft-prod.deb && \
     \
     apt-cache policy docker-ce && \
     apt-get update && \
@@ -50,6 +53,11 @@ RUN apt-get update && \
         && rm dotnet.tar.gz \
         && find /usr/share/dotnet -name "*.lzma" -type f -delete \
         && ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
+    \
+    add-apt-repository universe  && \
+    apt-get install apt-transport-https  && \
+    apt-get update  && \
+    sudo apt-get install dotnet-sdk-2.2  && \
     \
     apt-get clean all && \
     \
