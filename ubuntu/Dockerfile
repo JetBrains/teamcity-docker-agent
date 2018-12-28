@@ -31,14 +31,13 @@ RUN apt-get update && \
     dpkg -i packages-microsoft-prod.deb && \
     rm packages-microsoft-prod.deb && \   
     \
+    add-apt-repository universe  && \
     apt-cache policy docker-ce && \
     apt-get update && \
     apt-get install -y docker-ce=18.06.1~ce~3-0~ubuntu systemd && \
     systemctl disable docker && \
     curl -SL https://github.com/docker/compose/releases/download/1.23.2/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose && \
     \
-    add-apt-repository universe  && \
-    apt-get update  && \
     apt-get install -y dotnet-sdk-$DOTNET_SDK_VERSION  && \
     \
     apt-get clean all && \
