@@ -19,16 +19,17 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=true \
     NUGET_XMLDOC_MODE=skip \
     GIT_SSH_VARIANT=ssh \
     # Install .NET Core SDK
-    DOTNET_SDK_VERSION=2.2.100
+    DOTNET_SDK_VERSION=2.2
 
 RUN apt-get update && \
-    apt-get install -y git mercurial apt-transport-https ca-certificates software-properties-common wget && \
+    apt-get install -y git mercurial apt-transport-https ca-certificates software-properties-common && \
     \
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
     \     
-    wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb && \
+    curl -SL https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -o packages-microsoft-prod.deb && \
     dpkg -i packages-microsoft-prod.deb && \
+    rm packages-microsoft-prod.deb && \   
     \
     apt-cache policy docker-ce && \
     apt-get update && \
@@ -36,20 +37,9 @@ RUN apt-get update && \
     systemctl disable docker && \
     curl -SL https://github.com/docker/compose/releases/download/1.23.2/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose && \
     \
-    apt-get install -y --no-install-recommends \
-            libc6 \
-            libgcc1 \
-            libgssapi-krb5-2 \
-            libicu60 \
-            liblttng-ust0 \
-            libssl1.0.0 \
-            libstdc++6 \
-            zlib1g \
-        && rm -rf /var/lib/apt/lists/* && \
-     \
     add-apt-repository universe  && \
     apt-get update  && \
-    apt-get install -y dotnet-sdk-2.2  && \
+    apt-get install -y dotnet-sdk-$DOTNET_SDK_VERSION  && \
     \
     apt-get clean all && \
     \
