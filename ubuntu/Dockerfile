@@ -48,7 +48,6 @@ RUN apt-get update && \
         && rm -rf /var/lib/apt/lists/* && \
      \
     add-apt-repository universe  && \
-    apt-get install apt-transport-https  && \
     apt-get update  && \
     apt-get install -y dotnet-sdk-2.2  && \
     \
