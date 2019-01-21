@@ -19,7 +19,7 @@ ENV DOTNET_CLI_TELEMETRY_OPTOUT=true \
     NUGET_XMLDOC_MODE=skip \
     GIT_SSH_VARIANT=ssh \
     # Install .NET Core SDK
-    DOTNET_SDK_VERSION=2.1.500
+    DOTNET_SDK_VERSION=2.2.103
 
 RUN apt-get update && \
     apt-get install -y git mercurial apt-transport-https ca-certificates software-properties-common && \
@@ -37,9 +37,9 @@ RUN apt-get update && \
             libc6 \
             libgcc1 \
             libgssapi-krb5-2 \
-            libicu60 \
+            libicu57 \
             liblttng-ust0 \
-            libssl1.0.0 \
+            libssl1.0.2 \
             libstdc++6 \
             zlib1g \
         && rm -rf /var/lib/apt/lists/* && \
