@@ -1,6 +1,6 @@
 ARG TAG=1803
-ARG REGULAR_TAG=$TAG
-FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$TAG AS tools
+ARG MS_TAG=$TAG
+FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$MS_TAG AS tools
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -21,13 +21,14 @@ RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
     Remove-Item -Force git.zip
 
 # Install Mercurial
-RUN Invoke-WebRequest https://bitbucket.org/tortoisehg/files/downloads/mercurial-4.7.2-x64.msi -OutFile hg.msi; \
+RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
+    Invoke-WebRequest https://bitbucket.org/tortoisehg/files/downloads/mercurial-4.7.2-x64.msi -OutFile hg.msi; \
     Start-Process msiexec -Wait -ArgumentList /q, /i, hg.msi ; \
     Remove-Item -Force hg.msi
 
-FROM teamcity-minimal-agent:latest-nanoserver-$REGULAR_TAG AS buildagent
+FROM teamcity-minimal-agent:latest-nanoserver-$TAG AS buildagent
 
-FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$TAG
+FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$MS_TAG
 
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
