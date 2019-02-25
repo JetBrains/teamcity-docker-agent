@@ -1,4 +1,5 @@
 ARG TAG=1803
+ARG REGULAR_TAG=$TAG
 FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$TAG AS tools
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
@@ -24,7 +25,7 @@ RUN Invoke-WebRequest https://bitbucket.org/tortoisehg/files/downloads/mercurial
     Start-Process msiexec -Wait -ArgumentList /q, /i, hg.msi ; \
     Remove-Item -Force hg.msi
 
-FROM teamcity-minimal-agent:latest-nanoserver-$TAG AS buildagent
+FROM teamcity-minimal-agent:latest-nanoserver-$REGULAR_TAG AS buildagent
 
 FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$TAG
 
