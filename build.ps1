@@ -1,24 +1,11 @@
-# Build semi annual images
-$tags = @("1803")
+$tags = @("1803", "1809")
+
 foreach ($tag in $tags) {
  docker build `
-  --build-arg TAG=$tag `
   -t "teamcity-agent:latest-windowsservercore-$tag" `
-  -f windowsservercore/Dockerfile .
+  -f "windowsservercore/$tag/Dockerfile" .
 
  docker build `
-  --build-arg TAG=$tag `
   -t "teamcity-agent:latest-nanoserver-$tag" `
-  -f nanoserver/Dockerfile .
+  -f "nanoserver/$tag/Dockerfile" .
 }
-
-# Build images with long term support
-docker build --isolation=hyperv `
- -t teamcity-agent:latest-windowsservercore `
- -t teamcity-agent:latest-windowsservercore-ltsc2016 `
- -f windowsservercore-ltsc2016/Dockerfile .
-
-docker build --isolation=hyperv `
- -t teamcity-agent:latest-nanoserver `
- -t teamcity-agent:latest-nanoserver-sac2016 `
- -f nanoserver-sac2016/Dockerfile .
