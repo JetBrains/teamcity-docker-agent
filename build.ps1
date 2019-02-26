@@ -1,13 +1,11 @@
-# Build semi annual images
 $tags = @("1803", "1809")
+
 foreach ($tag in $tags) {
  docker build `
-  --build-arg TAG=$tag `
   -t "teamcity-agent:latest-windowsservercore-$tag" `
-  -f windowsservercore/Dockerfile .
+  -f "windowsservercore/$tag/Dockerfile" .
 
  docker build `
-  --build-arg TAG=$tag `
   -t "teamcity-agent:latest-nanoserver-$tag" `
-  -f nanoserver/Dockerfile .
+  -f "nanoserver/$tag/Dockerfile" .
 }

@@ -1,6 +1,4 @@
-ARG TAG=1803
-
-FROM mcr.microsoft.com/powershell:nanoserver-$TAG AS dotnet
+FROM mcr.microsoft.com/powershell:nanoserver-1803 AS dotnet
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 # Retrieve .NET Core SDK
@@ -11,8 +9,8 @@ RUN Invoke-WebRequest -OutFile dotnet.zip https://dotnetcli.blob.core.windows.ne
     Remove-Item -Force dotnet.zip; \
     Get-ChildItem -Path $Env:ProgramFiles\dotnet -Include *.lzma -File -Recurse | foreach { $_.Delete()}
 
-FROM teamcity-agent:latest-windowsservercore-$TAG AS tools
-FROM mcr.microsoft.com/powershell:nanoserver-$TAG
+FROM teamcity-agent:latest-windowsservercore-1803 AS tools
+FROM mcr.microsoft.com/powershell:nanoserver-1803
 
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]

@@ -1,6 +1,4 @@
-ARG TAG=1803
-ARG MS_TAG=$TAG
-FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$MS_TAG AS tools
+FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-ltsc2019 AS tools
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -26,9 +24,9 @@ RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
     Start-Process msiexec -Wait -ArgumentList /q, /i, hg.msi ; \
     Remove-Item -Force hg.msi
 
-FROM teamcity-minimal-agent:latest-nanoserver-$TAG AS buildagent
+FROM teamcity-minimal-agent:latest-nanoserver-1809 AS buildagent
 
-FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$MS_TAG
+FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-ltsc2019
 
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
