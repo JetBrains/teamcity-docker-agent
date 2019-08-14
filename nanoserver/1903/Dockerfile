@@ -9,7 +9,7 @@ RUN Invoke-WebRequest -OutFile dotnet.zip https://dotnetcli.blob.core.windows.ne
     Remove-Item -Force dotnet.zip; \
     Get-ChildItem -Path $Env:ProgramFiles\dotnet -Include *.lzma -File -Recurse | foreach { $_.Delete()}
 
-FROM teamcity-agent:latest-windowsservercore-1903 AS tools
+FROM teamcity-agent:latest-windowsservercore-1809 AS tools
 
 # Workaround for https://github.com/PowerShell/PowerShell-Docker/issues/164
 FROM mcr.microsoft.com/windows/nanoserver:1903
