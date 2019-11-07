@@ -1,4 +1,4 @@
-FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-ltsc2019 AS tools
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8-windowsservercore-ltsc2019 AS tools
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -26,7 +26,7 @@ RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
 
 FROM teamcity-minimal-agent:latest-nanoserver-1809 AS buildagent
 
-FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-ltsc2019
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8-windowsservercore-ltsc2019
 
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
