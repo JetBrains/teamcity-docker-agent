@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/powershell:nanoserver-1803 AS dotnet
 SHELL ["pwsh", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
 # Retrieve .NET Core SDK
-ENV DOTNET_SDK_VERSION 2.2.103
+ENV DOTNET_SDK_VERSION 3.0.100
 
 RUN Invoke-WebRequest -OutFile dotnet.zip https://dotnetcli.blob.core.windows.net/dotnet/Sdk/$Env:DOTNET_SDK_VERSION/dotnet-sdk-$Env:DOTNET_SDK_VERSION-win-x64.zip; \
     Expand-Archive dotnet.zip -DestinationPath $Env:ProgramFiles\dotnet; \
