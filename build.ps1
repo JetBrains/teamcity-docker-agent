@@ -1,4 +1,4 @@
-$tags = @("1803", "1809")
+$tags = @("1803", "1809", "1903")
 
 foreach ($tag in $tags) {
  docker build `
