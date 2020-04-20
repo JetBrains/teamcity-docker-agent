@@ -45,5 +45,20 @@ USER ContainerAdministrator
 RUN setx /M PATH "%PATH%;%JAVA_HOME%\bin;C:\Program Files\Git\cmd;C:\Program Files\dotnet"
 USER ContainerUser
 
+ENV LOCALAPPDATA="C:\Users\ContainerUser\AppData\Local" \
+    # set a fixed location for the Module analysis cache
+    PSModuleAnalysisCachePath="C:\Users\ContainerUser\AppData\Local\Microsoft\Windows\PowerShell\docker\ModuleAnalysisCache"
+
+# intialize powershell module cache
+RUN pwsh -NoLogo -NoProfile -Command " \
+    $stopTime = (get-date).AddMinutes(15); \
+    $ErrorActionPreference = 'Stop' ; \
+    $ProgressPreference = 'SilentlyContinue' ; \
+    while(!(Test-Path -Path $env:PSModuleAnalysisCachePath)) {  \
+        Write-Host "'Waiting for $env:PSModuleAnalysisCachePath'" ; \
+        if((get-date) -gt $stopTime) { throw 'timout expired'} \
+        Start-Sleep -Seconds 6 ; \
+    }"
+
 # Trigger first run experience by running arbitrary cmd to populate local package cache
 RUN dotnet help
