@@ -1,7 +1,9 @@
 [![official JetBrains project](http://jb.gg/badges/official-plastic.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
 [![jetbrains/teamcity-agent](https://img.shields.io/docker/pulls/jetbrains/teamcity-agent.svg)](https://hub.docker.com/r/jetbrains/teamcity-agent/)
 
-## TeamCity Agent Image Dockerfile
+## DEPRECATED TeamCity Agent Image Dockerfile
+
+### :no_entry: This repository is no longer supported, please consider using [teamcity-docker-images](https://github.com/JetBrains/teamcity-docker-images) instead.
 
 This project contains the Dockerfiles and all necessary scripts to build the Linux and Windows Docker images and run a TeamCity Build Agent inside the container.
 
