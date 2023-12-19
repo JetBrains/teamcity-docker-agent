@@ -3,7 +3,8 @@ FROM teamcity-minimal-agent:latest
 USER root
 
 LABEL dockerImage.teamcity.version="latest" \
-      dockerImage.teamcity.buildNumber="latest"
+      dockerImage.teamcity.buildNumber="latest" \
+      dockerImage.teamcity.agent=
 
     # Opt out of the telemetry feature
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=true \
